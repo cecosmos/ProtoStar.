@@ -1,9 +1,12 @@
 version: 2.1
+executors:
+  dotnetcoreexecutor:
+    docker:
+      - image: microsoft/aspnetcore-build:2
 jobs:
   build:
-    docker:
-      - image: microsoft/aspnetcore-build:2.0
-     steps:
+    executor: dotnetcoreexecutor
+    steps:
       - checkout
       - run: find .
       - run: dotnet restore
