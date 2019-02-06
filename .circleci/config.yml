@@ -8,14 +8,11 @@ jobs:
     executor: dotnetcoreexecutor
     steps:
       - checkout
-      - run: dotnet restore
-      - run: dotnet build Source/ProtoStar.Core.csproj
+      - run: dotnet build Source/Core.csproj
   test:
     executor: dotnetcoreexecutor
     steps:
       - checkout
-      - run: dotnet restore
-      - run: dotnet build
       - run: dotnet test
 
 workflows:
