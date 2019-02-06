@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 executors:
   dotnetcoreexecutor:
     docker:
@@ -14,11 +14,12 @@ jobs:
     steps:
       - checkout
       - run: dotnet test
+
 workflows:
-  version: 2
+  version: 2.1
   build_test:
     jobs:
       - build
       - test:
-        requires:
-          - build
+          requires:
+            - build
