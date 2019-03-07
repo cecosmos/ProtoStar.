@@ -5,8 +5,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
-namespace System.Linq
+namespace ProtoStar.Core.Linq
 {
     public static class EnumerableExtensions
     {

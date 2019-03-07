@@ -5,12 +5,13 @@
 using System.Collections.Generic;
 using System;
 
-namespace System.Linq
+namespace ProtoStar.Core.Linq
 {
     public static class DictionaryExtensions
     {
         /// <summary>
-        /// This method add a key/value pair on a <see cref="IDictionary{TKey, TValue}"/> with a first value win premise.
+        /// Adds an element with the provided key and value to the 
+        /// <see cref="IDictionary{TKey, TValue}"/> with a first value win premise.
         /// </summary>
         /// <typeparam name="TKey">The type of the dictionary keys.</typeparam>
         /// <typeparam name="TValue">The type of the dictionary values.</typeparam>

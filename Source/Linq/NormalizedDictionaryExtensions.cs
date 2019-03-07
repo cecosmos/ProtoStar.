@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using ProtoStar.Core.Collections;
 
-namespace System.Linq
+namespace ProtoStar.Core.Linq
 {
     public static class NormalizedDictionaryExtensions
     {

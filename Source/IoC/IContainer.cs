@@ -8,7 +8,6 @@ namespace ProtoStar.Core.IoC
 {
     public interface IContainer
     {
-        void Register(Type abstractType, Func<object> concreteType);
         object Resolve(Type abstractType);
     }
 }

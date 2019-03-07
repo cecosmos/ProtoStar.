@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
@@ -76,5 +77,41 @@ namespace ProtoStar.Core.Collections
             Assert.True(hitRemove);
         }
 
+        [Fact]
+        public void IsReadOnlyOnNullCallbacks()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();
+            var col = new ForwarderCollection<int>(()=>baseCollection);
+            Assert.True(col.IsReadOnly);
+            col = new ForwarderCollection<int>(()=>baseCollection,baseCollection.Add,baseCollection.Remove);
+            Assert.False(col.IsReadOnly);
+        }
+
+        [Fact]
+        public void CountMatchesSource()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();
+            var col = new ForwarderCollection<int>(()=>baseCollection);
+            Assert.Equal(baseCollection.Count,col.Count);
+        }
+
+        [Fact]
+        public void ClearCleansSource()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();        
+            var col = new ForwarderCollection<int>(()=>baseCollection,baseCollection.Add,baseCollection.Remove);
+            col.Clear();
+            Assert.Empty(baseCollection);
+            Assert.Empty(col);
+        }
+
+        [Fact]
+        public void ContainsEnsureSourcePresence()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();        
+            var col = new ForwarderCollection<int>(()=>baseCollection,baseCollection.Add,baseCollection.Remove);
+            Assert.True(col.Contains(3));
+            Assert.False(col.Contains(10));
+        }
     }
 }

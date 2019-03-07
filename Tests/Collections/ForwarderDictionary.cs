@@ -55,7 +55,7 @@ namespace ProtoStar.Core.Collections
                 (int key, out string value) => dictionary.TryGetValue(key, out value),
                 () => dictionary.Keys,
                 (key, value) => { hitAdd = true; dictionary[key] = value; },
-                (key) => { hitRemove = true; return dictionary.Remove(key); }                );
+                (key) => { hitRemove = true; return dictionary.Remove(key); });
 
             Assert.Equal(dictionary, forwarderDictionary);
             Assert.False(hitAdd);
@@ -67,6 +67,9 @@ namespace ProtoStar.Core.Collections
             Assert.False(hitAdd);
             Assert.True(hitRemove);
 
+            hitRemove=false;
+            forwarderDictionary.Remove(new KeyValuePair<int,string>(1,"one"));
+            Assert.True(hitRemove);
         }
 
         [Fact]
@@ -104,6 +107,26 @@ namespace ProtoStar.Core.Collections
             Assert.False(hitAdd);
             Assert.True(hitRemove);
 
+        }
+
+
+        [Fact]
+        public void TestName()
+        {
+            var dictionary = new Dictionary<int, string>()
+                {
+                    { 1,"one" },
+                    { 2, "two" },
+                    { 3, "three" }
+                };
+
+            var forwarderDictionary = new ForwarderDictionary<int, string>(
+                dictionary.TryGetValue,
+                () => dictionary.Keys,
+                (key, value) =>  dictionary[key] = value,
+                (key) => dictionary.Remove(key));
+                
+            Assert.Throws<KeyNotFoundException>(()=> forwarderDictionary[4]);
         }
 
     }

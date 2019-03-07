@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ProtoStar.Core.Collections
 {
@@ -39,7 +40,7 @@ namespace ProtoStar.Core.Collections
 
         #region Public Properties
 
-        public bool IsReadOnly => AddCallback!=null;
+        public bool IsReadOnly => AddCallback==null;
         public int Count => Iterator().Count();
 
         #endregion Public Properties
@@ -61,6 +62,7 @@ namespace ProtoStar.Core.Collections
 
         public bool Contains(T item) => Iterator().Contains(item);
 
+        [ExcludeFromCodeCoverage]
         public void CopyTo(T[] array, int arrayIndex) => Iterator().ToList().CopyTo(array, arrayIndex);
 
         public IEnumerator<T> GetEnumerator() => Iterator().GetEnumerator();

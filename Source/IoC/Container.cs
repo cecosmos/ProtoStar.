@@ -43,13 +43,6 @@ namespace ProtoStar.Core.IoC
 
         public TAbstract Resolve<TAbstract>() where TAbstract : T =>(TAbstract)ResolveType(typeof(TAbstract));
 
-        void IContainer.Register(Type abstractType, Func<object> concreteType)
-        {
-            EnsureInheritance(typeof(T),abstractType,nameof(abstractType));
-            EnsureInheritance(abstractType, concreteType().GetType(), nameof(concreteType));
-            resolvers[abstractType] = ()=> (T)concreteType();
-        }
-
         object IContainer.Resolve(Type abstractType) => ResolveType(abstractType);
     }
 }

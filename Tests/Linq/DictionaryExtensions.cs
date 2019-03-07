@@ -6,36 +6,35 @@ using System.Linq;
 
 namespace ProtoStar.Core.Linq
 {
-    public class DictionaryExtensions
+    public class DictionaryExtensionsUT
     {
         [Fact]
-        public void TryAddCanAdd()
+        public void CanAdd()
         {
-            var dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
+            IDictionary<int,string> dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
             dictionary.TryAdd(4, "four");
-            Assert.Contains(4, dictionary.Keys);
             Assert.Equal("four", dictionary[4]);
         }
 
         [Fact]
-        public void TryAddWontUpdate()
+        public void WontUpdateOnExisting()
         {
-            var dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
+            IDictionary<int,string>  dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
             dictionary.TryAdd(3, "four");
             Assert.Equal("three", dictionary[3]);
         }
 
         [Fact]
-        public void TryAddTrueOnAdd()
+        public void TrueOnAdd()
         {
-            var dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
+            IDictionary<int,string>  dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
             Assert.True(dictionary.TryAdd(4, "four"));
         }
 
         [Fact]
-        public void TryAddFalseOnAvoidUpdate()
+        public void FalseOnAvoidUpdate()
         {
-            var dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
+            IDictionary<int,string>  dictionary = new Dictionary<int, string>() { { 1, "one" }, { 2, "two" }, { 3, "three" } };
             Assert.False(dictionary.TryAdd(3, "three"));
         }
     }
