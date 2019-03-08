@@ -22,7 +22,7 @@ jobs:
           dotnet test 
           /p:CollectCoverage=true 
           /p:Exclude=[ProtoStar.Core.Test*]*
-          /p:Threshold=20
+          /p:Threshold=80
   deploy:
     executor: dotnetcoreexecutor
     steps:
