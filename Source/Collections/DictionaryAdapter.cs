@@ -82,8 +82,9 @@ namespace ProtoStar.Core.Collections
         public void Clear() => 
             Keys.ToList().ForEach(k => Remove(k));        
 
+        [ExcludeFromCodeCoverage]
         public bool Contains(KeyValuePair<TKey, TValue> item)=>
-            GetCallback(item.Key, out var value);
+            GetCallback(item.Key, out var value)&&value.Equals(item.Value);
 
         public bool ContainsKey(TKey key) => 
             GetCallback(key, out var value);

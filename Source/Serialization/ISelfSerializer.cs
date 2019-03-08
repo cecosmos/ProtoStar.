@@ -1,4 +1,5 @@
-﻿// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
+﻿using System.Diagnostics.CodeAnalysis;
+// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
 // Project: ProtoStar
 // Author: Johni Michels
 
@@ -8,6 +9,7 @@ namespace ProtoStar.Core
     {
     }
 
+    [ExcludeFromCodeCoverage]
     public static class SelfSerializerExtensions
     {
         public static TOut Serialize<TOut>(this ISelfSerializer<TOut> selfSerializer) => selfSerializer.Serialize(selfSerializer);

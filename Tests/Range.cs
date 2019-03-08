@@ -1,12 +1,12 @@
-// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
+// Copyright ï¿½ 2018 ceCosmos, Brazil. All rights reserved.
 // Project: ProtoStar
 // Author: Johni Michels
 
 using Xunit;
 
-namespace ProtoStar.Core.Ranges
+namespace ProtoStar.Core.Tests
 {
-    public class Test
+    public class RangeUT
     {
         #region Public Methods
 

@@ -4,15 +4,22 @@ using System.Text;
 using Xunit;
 using System.Linq;
 
-namespace ProtoStar.Core
+namespace ProtoStar.Core.Tests
 {
     public class TypeExtensions
     {
         [Fact]
-        public void CanAssignToGenericType()
+        public void CanAssignToGenericInterface()
         {
             var listIntType = typeof(List<int>);
             Assert.True(listIntType.IsAssignableToGenericType(typeof(IEnumerable<>)));
+        }
+
+        [Fact]
+        public void CanAssignToGenericClass()
+        {
+            var listIntType = typeof(List<int>);
+            Assert.True(listIntType.IsAssignableToGenericType(typeof(List<>)));
         }
 
         [Fact]

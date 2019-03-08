@@ -1,4 +1,5 @@
-﻿// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
+﻿using System.Diagnostics.CodeAnalysis;
+// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
 // Project: ProtoStar
 // Author: Johni Michels
 
@@ -33,14 +34,22 @@ namespace ProtoStar.Core
 
         public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
         {
-            var interfaceTypes = givenType.GetInterfaces();
-            foreach (var it in interfaceTypes) { if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType) return true; }
-            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType) return true;
-            Type baseType = givenType.BaseType;
-            if (baseType == typeof(object)) return false;
-            return IsAssignableToGenericType(baseType, genericType);
+            if(givenType == typeof(object)) return false;
+
+            var ownTypeResult =
+                genericType.IsInterface?
+                givenType.IsAssignableToGenericInterface(genericType):
+                (givenType.IsGenericType && givenType.GetGenericTypeDefinition()==genericType);
+
+            return ownTypeResult || IsAssignableToGenericType(givenType.BaseType,genericType);
         }
 
+        private static bool IsAssignableToGenericInterface(this Type givenType, Type genericType) =>
+            givenType.GetInterfaces().
+            Any(intType=> intType.IsGenericType && 
+                          intType.GetGenericTypeDefinition()==genericType);
+
+        [ExcludeFromCodeCoverage]
         public static IEnumerable<Type> GetCurrentDomainTypes()=>
             AppDomain.CurrentDomain.GetAssemblies().
             Where(assembly=> !assembly.IsDynamic).

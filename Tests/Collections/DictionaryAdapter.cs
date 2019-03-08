@@ -168,9 +168,44 @@ namespace ProtoStar.Core.Collections
         }
 
         [Fact]
-        public void CamTryGetValue()
+        public void CanTryGetValue()
         {
-            
+            var dictionary = new Dictionary<int, string>()
+            {
+                { 1,"one" },
+                { 2, "two" },
+                { 3, "three" }
+            };
+
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
+                dictionary.TryGetValue,
+                () => dictionary.Keys,
+                (key, value) => dictionary[key] = value,
+                dictionary.Remove);
+
+            Assert.True(forwarderDictionary.TryGetValue(3, out var result));
+            Assert.Equal("three",result);
+
+        }
+
+        public void ClearsSource()
+        {
+            var dictionary = new Dictionary<int, string>()
+            {
+                { 1,"one" },
+                { 2, "two" },
+                { 3, "three" }
+            };
+
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
+                dictionary.TryGetValue,
+                () => dictionary.Keys,
+                (key, value) => dictionary[key] = value,
+                dictionary.Remove);
+
+            forwarderDictionary.Clear();
+
+            Assert.Empty(dictionary);
         }
 
     }
