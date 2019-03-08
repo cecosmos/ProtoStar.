@@ -20,6 +20,7 @@ jobs:
       - checkout
       - run: >
           dotnet test 
+          -v diag
           /p:CollectCoverage=true 
           /p:Exclude=[ProtoStar.Core.Test*]*
           /p:Threshold=80
