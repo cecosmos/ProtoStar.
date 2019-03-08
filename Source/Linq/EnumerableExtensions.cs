@@ -1,4 +1,5 @@
-﻿// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
+﻿using System.Collections.ObjectModel;
+// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
 // Project: ProtoStar
 // Author: Johni Michels
 
@@ -6,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using ProtoStar.Core.Collections;
 
 namespace ProtoStar.Core.Linq
 {
@@ -35,19 +37,10 @@ namespace ProtoStar.Core.Linq
             }
         }
 
-        public static IReadOnlyCollection<T> AsReadOnly<T>(this ICollection<T> source)
+        public static IReadOnlyCollection<T> AsReadOnly<T>(this IEnumerable<T> source)
         {
             if (source == null) throw new ArgumentNullException("source");
-            return source as IReadOnlyCollection<T> ?? new ReadOnlyCollectionAdapter<T>(source);
-        }
-
-        private sealed class ReadOnlyCollectionAdapter<T> : IReadOnlyCollection<T>
-        {
-            readonly ICollection<T> source;
-            public ReadOnlyCollectionAdapter(ICollection<T> source) => this.source = source;
-            public int Count => source.Count;
-            public IEnumerator<T> GetEnumerator() => source.GetEnumerator();
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            return source as IReadOnlyCollection<T> ?? new CollectionAdapter<T>(()=>source);
         }
 
         public static IEnumerable<T> TakeUntil<T>(this IEnumerable<T> source, System.Predicate<T> predicate, bool inclusive) =>

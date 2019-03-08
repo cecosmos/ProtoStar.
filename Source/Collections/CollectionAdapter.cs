@@ -10,20 +10,20 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ProtoStar.Core.Collections
 {
-    public class ForwarderCollection<T> : 
+    public class CollectionAdapter<T> : 
         ICollection<T>, 
         IReadOnlyCollection<T>
     {
         #region Public Constructors
 
-        public ForwarderCollection(Func<IEnumerable<T>> iterator, Action<T> addCallback, Predicate<T> removeCallback)
+        public CollectionAdapter(Func<IEnumerable<T>> iterator, Action<T> addCallback, Predicate<T> removeCallback)
         {
             AddCallback = addCallback;
             Iterator = iterator;
             RemoveCallback = removeCallback;
         }
 
-        public ForwarderCollection(Func<IEnumerable<T>> iterator)
+        public CollectionAdapter(Func<IEnumerable<T>> iterator)
         {
             Iterator = iterator;
         }

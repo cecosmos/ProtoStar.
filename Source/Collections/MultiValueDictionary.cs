@@ -23,7 +23,7 @@ namespace ProtoStar.Core.Collections
         }
 
         public ICollection<TValue> this[TKey key] => 
-            new ForwarderCollection<TValue>(
+            new CollectionAdapter<TValue>(
                 ()=> Source.TryGetValue(key, out var result) ? result: Enumerable.Empty<TValue>(),
                 value=> Add(key,value),
                 value=> Remove(key,value));

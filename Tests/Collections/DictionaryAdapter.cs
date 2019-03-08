@@ -5,7 +5,7 @@ using Xunit;
 
 namespace ProtoStar.Core.Collections
 {
-    public class ForwarderDictionary
+    public class DictionaryAdapter
     {
         [Fact]
         public  void AddElement()
@@ -20,7 +20,7 @@ namespace ProtoStar.Core.Collections
             bool hitAdd = false;
             bool hitRemove = false;
 
-            var forwarderDictionary = new ForwarderDictionary<int, string>(
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
                 (int key,out string value) =>  dictionary.TryGetValue(key, out value),
                 () => dictionary.Keys,
                 (key, value) => { hitAdd = true; dictionary[key] = value; },
@@ -51,7 +51,7 @@ namespace ProtoStar.Core.Collections
             bool hitAdd = false;
             bool hitRemove = false;
 
-            var forwarderDictionary = new ForwarderDictionary<int, string>(
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
                 (int key, out string value) => dictionary.TryGetValue(key, out value),
                 () => dictionary.Keys,
                 (key, value) => { hitAdd = true; dictionary[key] = value; },
@@ -84,7 +84,7 @@ namespace ProtoStar.Core.Collections
 
             var (hitAdd, hitRemove) = (false, false);
 
-            var forwarderDictionary = new ForwarderDictionary<int, string>(
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
                 (int key, out string value) => dictionary.TryGetValue(key, out value),
                 () => dictionary.Keys,
                 (key, value) => { hitAdd = true; dictionary[key] = value; },
@@ -111,7 +111,7 @@ namespace ProtoStar.Core.Collections
 
 
         [Fact]
-        public void TestName()
+        public void ThrowsOnKeyNotFound()
         {
             var dictionary = new Dictionary<int, string>()
                 {
@@ -120,13 +120,57 @@ namespace ProtoStar.Core.Collections
                     { 3, "three" }
                 };
 
-            var forwarderDictionary = new ForwarderDictionary<int, string>(
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
                 dictionary.TryGetValue,
                 () => dictionary.Keys,
                 (key, value) =>  dictionary[key] = value,
                 (key) => dictionary.Remove(key));
                 
             Assert.Throws<KeyNotFoundException>(()=> forwarderDictionary[4]);
+        }
+
+        [Fact]
+        public void IsReadOnlyOnNullAddCallback()
+        {
+            var dictionary = new Dictionary<int, string>()
+                {
+                    { 1,"one" },
+                    { 2, "two" },
+                    { 3, "three" }
+                };
+
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
+                dictionary.TryGetValue,
+                () => dictionary.Keys);
+            
+
+            Assert.True(forwarderDictionary.IsReadOnly);
+        }
+
+        [Fact]
+        public void CanSetValues()
+        {
+            var dictionary = new Dictionary<int, string>()
+            {
+                { 1,"one" },
+                { 2, "two" },
+                { 3, "three" }
+            };
+
+            var forwarderDictionary = new DictionaryAdapter<int, string>(
+                dictionary.TryGetValue,
+                () => dictionary.Keys,
+                (key, value) => dictionary[key] = value,
+                dictionary.Remove);
+
+            forwarderDictionary[4] = "four";
+            Assert.Contains(4,dictionary.Keys);
+        }
+
+        [Fact]
+        public void CamTryGetValue()
+        {
+            
         }
 
     }

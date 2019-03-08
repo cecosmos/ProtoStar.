@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using Xunit;
 using System.Linq;
+using ProtoStar.Core.Linq;
 
-namespace ProtoStar.Core.Linq
+namespace ProtoStar.Core.Tests
 {
     public class EnumerableExtensions
     {
