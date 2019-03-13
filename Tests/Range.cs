@@ -38,6 +38,22 @@ namespace ProtoStar.Core.Tests
         public void IsInside(double lower, double upper, double value, bool isAbove) =>
             Assert.Equal(isAbove, (new Range<double>() { Minimum = lower, Maximum = upper }).IsInside(value));
 
+
+        [Theory]
+        [InlineData(0,1,2, RelativePositionType.Above)]
+        [InlineData(0,1,0.5,RelativePositionType.Inside)]
+        [InlineData(0,1,-1,RelativePositionType.Bellow)]
+        public void RelativePosition(
+            double minValue,
+            double maxValue,
+            double targetValue,
+            RelativePositionType expectedRelativePosition)
+        {
+            Assert.Equal(
+                expectedRelativePosition,
+                new Range<double>(minValue,maxValue).RelativePosition(targetValue));
+        }
+
         #endregion Public Methods
     }
 }

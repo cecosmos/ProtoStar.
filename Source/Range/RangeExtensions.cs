@@ -1,4 +1,5 @@
-﻿// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
+﻿using System;
+// Copyright © 2018 ceCosmos, Brazil. All rights reserved.
 // Project: ProtoStar
 // Author: Johni Michels
 
@@ -6,11 +7,13 @@ using System.Collections.Generic;
 
 namespace ProtoStar.Core
 {
+    [Flags]
     public enum RelativePositionType
     {
-        Above = 1,
         Inside = 0,
-        Bellow = -1
+        Above = 1,        
+        Bellow = 2,
+        Outside = 3
     }
 
     public static class RangeExtensions

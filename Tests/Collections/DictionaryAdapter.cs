@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using ProtoStar.Core.Collections;
 
-namespace ProtoStar.Core.Collections
+namespace ProtoStar.Core.Tests.Collections
 {
     public class DictionaryAdapter
     {
@@ -188,6 +189,7 @@ namespace ProtoStar.Core.Collections
 
         }
 
+        [Fact]
         public void ClearsSource()
         {
             var dictionary = new Dictionary<int, string>()

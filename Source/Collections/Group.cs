@@ -9,18 +9,16 @@ using System.Collections;
 
 namespace ProtoStar.Core.Collections
 {
+    [ExcludeFromCodeCoverage]
     public class Group<TKey, TValue> :
         IGrouping<TKey, TValue>
     {
-        [ExcludeFromCodeCoverage]
         public TKey Key { get; private set; }
         
-        [ExcludeFromCodeCoverage]
         private IEnumerable<TValue> Values { get; set; }
 
         public IEnumerator<TValue> GetEnumerator() => Values.GetEnumerator();
 
-        [ExcludeFromCodeCoverage]
         IEnumerator IEnumerable.GetEnumerator() => Values.GetEnumerator();
 
         public Group(TKey key, IEnumerable<TValue> values)

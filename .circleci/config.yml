@@ -22,7 +22,7 @@ jobs:
           dotnet test 
           -v diag
           /p:CollectCoverage=true 
-          /p:Exclude=[ProtoStar.Core.Test*]*
+          /p:Include=[ProtoStar.Core]*
           /p:Threshold=80
   deploy:
     executor: dotnetcoreexecutor

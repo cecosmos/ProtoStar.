@@ -48,7 +48,7 @@ namespace ProtoStar.Core.Collections
 
         #region Private Methods
 
-        private void Add(KeyValuePair<T, double> item) => Add(item.Key, item.Value);
+        pr9ivate void Add(KeyValuePair<T, double> item) => Add(item.Key, item.Value);
 
         #endregion Private Methods
 

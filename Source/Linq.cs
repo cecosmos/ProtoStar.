@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Collections.ObjectModel;
 // Copyright © 2018 ceCosmos, Brazil. All rights reserved.
 // Project: ProtoStar
 // Author: Johni Michels
@@ -9,9 +10,9 @@ using System;
 using System.Linq;
 using ProtoStar.Core.Collections;
 
-namespace ProtoStar.Core.Linq
+namespace ProtoStar.Core
 {
-    public static class EnumerableExtensions
+    public static class Linq
     {
         #region Public Methods
 
@@ -37,14 +38,33 @@ namespace ProtoStar.Core.Linq
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public static IReadOnlyCollection<T> AsReadOnly<T>(this IEnumerable<T> source)
         {
             if (source == null) throw new ArgumentNullException("source");
             return source as IReadOnlyCollection<T> ?? new CollectionAdapter<T>(()=>source);
         }
 
+        [ExcludeFromCodeCoverage]
         public static IEnumerable<T> TakeUntil<T>(this IEnumerable<T> source, System.Predicate<T> predicate, bool inclusive) =>
             source.TakeWhile(item => !predicate(item), inclusive);
+
+        public static NormalizedDictionary<TOut> ToNormalizedDictionary<TIn,TOut>(
+            this IEnumerable<TIn> source,
+            Func<TIn,TOut> keySelector,
+            Func<TIn,double> valueSelector)
+        {
+            var result = new NormalizedDictionary<TOut>();
+            foreach(var item in source)
+            {
+                result.Add(keySelector(item), valueSelector(item));
+            }
+            return result;
+        }
+
+        public static NormalizedDictionary<T> ToNormalizedDictionary<T>(
+            this IEnumerable<KeyValuePair<T,double>> source)=>
+            source.ToNormalizedDictionary(kv=> kv.Key,kv=>kv.Value);        
 
         #endregion Public Methods
     }
