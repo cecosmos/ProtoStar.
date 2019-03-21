@@ -39,7 +39,7 @@ namespace ProtoStar.Core
         }
 
         [ExcludeFromCodeCoverage]
-        public static IReadOnlyCollection<T> AsReadOnly<T>(this IEnumerable<T> source)
+        public static IReadOnlyCollection<T> AsReadOnlyCollection<T>(this IEnumerable<T> source)
         {
             if (source == null) throw new ArgumentNullException("source");
             return source as IReadOnlyCollection<T> ?? new CollectionAdapter<T>(()=>source);

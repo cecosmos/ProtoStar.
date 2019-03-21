@@ -4,7 +4,7 @@ using ProtoStar.Core;
 
 namespace ProtoStar.Core.Tests
 {
-    public class GeneralExtensions
+    public class ExceptionCheckingExtensions
     {
         [Fact]
         public void ThrowsWhenNull()
