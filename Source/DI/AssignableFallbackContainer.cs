@@ -7,11 +7,12 @@ using System.Collections.Generic;
 using ProtoStar.Core;
 using System.Linq;
 using System.ComponentModel.Design;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ProtoStar.Core
 {
     public class AssignableFallbackContainer :
-        IServiceContainer
+        IServiceContainer, ISupportRequiredService
     {
         private readonly Dictionary<Type, Func<object>> resolvers = new Dictionary<Type, Func<object>>();
 
@@ -50,5 +51,10 @@ namespace ProtoStar.Core
             }
             return result();
         }
+
+        public object GetRequiredService(Type serviceType)=>
+            ((Func<object>)GetService(serviceType).ThrowOnNull).
+            CatchingException<object,ArgumentNullException>(()=>throw new InvalidOperationException());
+
     }
 }

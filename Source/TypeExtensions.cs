@@ -15,7 +15,7 @@ namespace ProtoStar.Core
 
         private static Type[] GetGenericArgumentsForBaseTypeClass(this Type givenType, Type genericType)=>
             givenType == typeof(object) ?
-                null :
+                Enumerable.Empty<Type>().ToArray() :
                 ((givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType) ?
                     givenType.GetGenericArguments() :
                     givenType.BaseType.GetGenericArgumentsForBaseTypeClass(genericType));
