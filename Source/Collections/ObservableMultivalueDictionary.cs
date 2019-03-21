@@ -44,7 +44,7 @@ namespace ProtoStar.Core.Collections
         #region Public Indexers
 
         public ICollection<TValue> this[TKey key] =>
-            new ForwarderCollection<TValue>(
+            new CollectionAdapter<TValue>(
                 () => SourceDictionary[key],
                 (value) => Add(key, value),
                 (value) => Remove(key, value));

@@ -8,6 +8,12 @@ namespace ProtoStar.Core
     {
         #region Public Properties
 
+        public Range(T minimum, T maximum)
+        {
+            this.Minimum = minimum;
+            this.Maximum = maximum;
+        }
+
         public T Maximum { get; set; }
 
         public T Minimum { get; set; }

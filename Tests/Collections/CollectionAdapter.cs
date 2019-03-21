@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.Linq;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
@@ -6,7 +7,7 @@ using Xunit;
 namespace ProtoStar.Core.Collections
 {
     
-    public class ForwarderCollection
+    public class CollectionAdapter
     {
         [Fact]
         public void AddRemoveElement()
@@ -14,7 +15,7 @@ namespace ProtoStar.Core.Collections
             IList<int> baseCollection = new List<int>(new[] { 2, 3, 4 });
             bool hitAdd = false;
             bool hitRemove = false;
-            var forwardedCollection = new ForwarderCollection<int>(
+            var forwardedCollection = new CollectionAdapter<int>(
                 () => baseCollection,
                 x => { hitAdd = true; baseCollection.Add(x); },                
                 x => { hitRemove = true; return baseCollection.Remove(x); });
@@ -43,7 +44,7 @@ namespace ProtoStar.Core.Collections
             IList<int> baseCollection = new List<int>(new[] { 2, 3, 4 });
             bool hitAdd = false;
             bool hitRemove = false;
-            var forwardedCollection = new ForwarderCollection<int>(
+            var forwardedCollection = new CollectionAdapter<int>(
                 () => baseCollection,
                 x => { hitAdd = true; baseCollection.Add(x); },                
                 x => { hitRemove = true; return baseCollection.Remove(x); });
@@ -64,7 +65,7 @@ namespace ProtoStar.Core.Collections
             IList<int> baseCollection = new List<int>(new[] { 2, 3, 4 });
             bool hitAdd = false;
             bool hitRemove = false;
-            var forwardedCollection = new ForwarderCollection<int>(
+            var forwardedCollection = new CollectionAdapter<int>(
                 () => baseCollection,
                 x => { hitAdd = true; baseCollection.Add(x); },                
                 x => { hitRemove = true; return baseCollection.Remove(x); });
@@ -76,5 +77,41 @@ namespace ProtoStar.Core.Collections
             Assert.True(hitRemove);
         }
 
+        [Fact]
+        public void IsReadOnlyOnNullCallbacks()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();
+            var col = new CollectionAdapter<int>(()=>baseCollection);
+            Assert.True(col.IsReadOnly);
+            col = new CollectionAdapter<int>(()=>baseCollection,baseCollection.Add,baseCollection.Remove);
+            Assert.False(col.IsReadOnly);
+        }
+
+        [Fact]
+        public void CountMatchesSource()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();
+            var col = new CollectionAdapter<int>(()=>baseCollection);
+            Assert.Equal(baseCollection.Count,col.Count);
+        }
+
+        [Fact]
+        public void ClearCleansSource()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();        
+            var col = new CollectionAdapter<int>(()=>baseCollection,baseCollection.Add,baseCollection.Remove);
+            col.Clear();
+            Assert.Empty(baseCollection);
+            Assert.Empty(col);
+        }
+
+        [Fact]
+        public void ContainsEnsureSourcePresence()
+        {
+            IList<int> baseCollection =  System.Linq.Enumerable.Range(0,10).ToList();        
+            var col = new CollectionAdapter<int>(()=>baseCollection,baseCollection.Add,baseCollection.Remove);
+            Assert.True(col.Contains(3));
+            Assert.False(col.Contains(10));
+        }
     }
 }

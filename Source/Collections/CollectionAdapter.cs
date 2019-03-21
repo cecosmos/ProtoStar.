@@ -6,23 +6,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ProtoStar.Core.Collections
 {
-    public class ForwarderCollection<T> : 
+    public class CollectionAdapter<T> : 
         ICollection<T>, 
         IReadOnlyCollection<T>
     {
         #region Public Constructors
 
-        public ForwarderCollection(Func<IEnumerable<T>> iterator, Action<T> addCallback, Predicate<T> removeCallback)
+        public CollectionAdapter(Func<IEnumerable<T>> iterator, Action<T> addCallback, Predicate<T> removeCallback)
         {
             AddCallback = addCallback;
             Iterator = iterator;
             RemoveCallback = removeCallback;
         }
 
-        public ForwarderCollection(Func<IEnumerable<T>> iterator)
+        public CollectionAdapter(Func<IEnumerable<T>> iterator)
         {
             Iterator = iterator;
         }
@@ -39,7 +40,7 @@ namespace ProtoStar.Core.Collections
 
         #region Public Properties
 
-        public bool IsReadOnly => AddCallback!=null;
+        public bool IsReadOnly => AddCallback==null;
         public int Count => Iterator().Count();
 
         #endregion Public Properties
@@ -61,6 +62,7 @@ namespace ProtoStar.Core.Collections
 
         public bool Contains(T item) => Iterator().Contains(item);
 
+        [ExcludeFromCodeCoverage]
         public void CopyTo(T[] array, int arrayIndex) => Iterator().ToList().CopyTo(array, arrayIndex);
 
         public IEnumerator<T> GetEnumerator() => Iterator().GetEnumerator();

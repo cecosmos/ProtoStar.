@@ -6,10 +6,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ProtoStar.Core.Collections
 {
-    public class ForwarderDictionary<TKey, TValue> : 
+    public class DictionaryAdapter<TKey, TValue> : 
         IDictionary<TKey, TValue>,
         IReadOnlyDictionary<TKey,TValue>
     {
@@ -17,9 +18,8 @@ namespace ProtoStar.Core.Collections
         private readonly Action<TKey, TValue> AddOrSetCallback;
         private readonly Predicate<TKey> RemoveCallback;
         private readonly Func<IEnumerable<TKey>> KeyEnumerable;
-        private readonly Action<TKey> OnKeyNotFound;
 
-        public ForwarderDictionary(
+        public DictionaryAdapter(
             TryFunc<TKey, TValue> getCallback,
             Func<IEnumerable<TKey>> keyEnumerable,
             Action<TKey, TValue> addOrSetCallback,
@@ -31,21 +31,7 @@ namespace ProtoStar.Core.Collections
             KeyEnumerable = keyEnumerable;
         }
 
-        public ForwarderDictionary(
-            TryFunc<TKey, TValue> getCallback, 
-            Func<IEnumerable<TKey>> keyEnumerable, 
-            Action<TKey, TValue> addOrSetCallback, 
-            Predicate<TKey> removeCallback,
-            Action<TKey> onKeyNotFound)
-        {
-            GetCallback = getCallback;
-            AddOrSetCallback = addOrSetCallback;
-            RemoveCallback = removeCallback;
-            KeyEnumerable = keyEnumerable;
-            OnKeyNotFound = onKeyNotFound;
-        }
-
-        public ForwarderDictionary(TryFunc<TKey,TValue> getCallback,Func<IEnumerable<TKey>> keyEnumerable)
+        public DictionaryAdapter(TryFunc<TKey,TValue> getCallback,Func<IEnumerable<TKey>> keyEnumerable)
         {
             GetCallback = getCallback;
             KeyEnumerable = keyEnumerable;
@@ -56,26 +42,30 @@ namespace ProtoStar.Core.Collections
             get
             {
                 if(GetCallback(key, out var result)) return result;
-                OnKeyNotFound?.Invoke(key);
                 throw new KeyNotFoundException();
             }
             set => AddOrSetCallback(key,value);
         }
 
-        public ICollection<TKey> Keys => Array.AsReadOnly(KeyEnumerable().ToArray());
+        public ICollection<TKey> Keys => new CollectionAdapter<TKey>(KeyEnumerable);
 
-        public ICollection<TValue> Values => Array.AsReadOnly(KeyEnumerable().Select(k=> this[k]).ToArray());
+        public ICollection<TValue> Values => new CollectionAdapter<TValue>(()=>KeyEnumerable().Select(k=> this[k]));
 
+        [ExcludeFromCodeCoverage]
         public int Count => KeyEnumerable().Count();
 
-        public bool IsReadOnly => AddOrSetCallback!=null;
+        public bool IsReadOnly => AddOrSetCallback==null;
 
+        [ExcludeFromCodeCoverage]
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
 
+        [ExcludeFromCodeCoverage]
         IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
+        [ExcludeFromCodeCoverage]
         int IReadOnlyCollection<KeyValuePair<TKey, TValue>>.Count => Count;
 
+        [ExcludeFromCodeCoverage]
         TValue IReadOnlyDictionary<TKey, TValue>.this[TKey key] => this[key];
 
         public void Add(TKey key, TValue value)
@@ -92,15 +82,16 @@ namespace ProtoStar.Core.Collections
         public void Clear() => 
             Keys.ToList().ForEach(k => Remove(k));        
 
+        [ExcludeFromCodeCoverage]
         public bool Contains(KeyValuePair<TKey, TValue> item)=>
-            Keys.Contains(item.Key);
+            GetCallback(item.Key, out var value)&&value.Equals(item.Value);
 
+        public bool ContainsKey(TKey key) => 
+            GetCallback(key, out var value);
 
-        public bool ContainsKey(TKey key) => Keys.Contains(key);
-
+        [ExcludeFromCodeCoverage]
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)=>
             this.AsEnumerable().Select((kv, i) => { array[i + arrayIndex] = kv; return kv; }).ToList();
-
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() =>
             Keys.Select(k => new KeyValuePair<TKey, TValue>(k, this[k])).GetEnumerator();

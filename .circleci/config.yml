@@ -8,7 +8,53 @@ jobs:
     executor: dotnetcoreexecutor
     steps:
       - checkout
-      - run: find .
-      - run: dotnet restore
-      - run: dotnet build
+      - run: dotnet build Source/ProtoStar.Core.csproj
+  test:
+    executor: dotnetcoreexecutor
+    steps:
+      - checkout
       - run: dotnet test
+  code_coverage:
+    executor: dotnetcoreexecutor
+    steps:
+      - checkout
+      - run: >
+          dotnet test 
+          /p:CollectCoverage=true 
+          /p:Include=[ProtoStar.Core]*
+          /p:Threshold=80
+  deploy:
+    executor: dotnetcoreexecutor
+    steps:
+      - checkout
+      - run: >
+          dotnet pack
+          Source/ProtoStar.Core.csproj
+          -c Release
+          --include-source
+          --include-symbols
+          -o ../nuget
+      - run: >
+          dotnet nuget push 
+          nuget/*.nupkg
+          -s https://api.nuget.org/v3/index.json
+          -k ${NUGET_API_KEY}
+
+workflows:
+  version: 2.1
+  build_test_coverage:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - code_coverage:
+          requires:
+            - test
+      - deploy:
+          requires:
+            - code_coverage
+          filters:
+            branches:
+              only:
+                - master

@@ -4,12 +4,14 @@
 
 using System.Linq;
 using System;
+using System.ComponentModel.Design;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace ProtoStar.Core.IoC
+namespace ProtoStar.Core
 {
     public static class ContainerExtensions
     {
-        public static void SolveDependencies(this IContainer container, object dependent)
+        public static void SolveDependencies(this IServiceProvider container, object dependent)
         {
             var genericIDependent = typeof(IDependent<>);
             var dependencies = dependent.GetType().
@@ -19,9 +21,13 @@ namespace ProtoStar.Core.IoC
             {
                 var dependencyTypeResolver = genericIDependent.MakeGenericType(t);
                 var targetInjectionProperty = dependencyTypeResolver.GetProperties().First();
-                var containerResolved = container.Resolve(t);
+                var containerResolved = container.GetService(t);
                 targetInjectionProperty.SetValue(dependent, containerResolved);
             }
         }
+
+        public static void AddService<T>(this IServiceContainer provider, T service)=>
+            provider.AddService(typeof(T), service);
+        
     }
 }
