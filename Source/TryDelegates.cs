@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace System
+namespace ProtoStar.Core
 {
     public delegate bool TryFunc<TResult>(out TResult result);
     public delegate bool TryFunc<in T1, TResult>(T1 t1, out TResult result);
