@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>ProtoStar.Core</AssemblyName>
-    <Version>1.1.0-alpha</Version>
+    <Version>2.0.0-alpha</Version>
     <Company>ceCosmos</Company>
     <Authors>Johni.Michels</Authors>
     <RepositoryUrl>https://github.com/cecosmos/ProtoStar.Core</RepositoryUrl>
